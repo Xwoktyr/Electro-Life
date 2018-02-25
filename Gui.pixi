@@ -1,0 +1,207 @@
+/*
+  Графический интерфейс для 
+  симуляции жизни 
+*/
+
+/*
+ * параметры Xmax,Ymax,Xhalf,Yhalf нужны для перевода системы 
+ * координат Pixilang в обычную и столь любимую про-
+ * -грамистами систему с нулем координат в верхнем 
+ * левом углу и осью У вниз, а не как в Pixi в 
+ * центре экрана
+ * */
+
+Xmax = WINDOW_XSIZE // Максимальная ширина экрана
+Ymax = WINDOW_YSIZE // Максимальная высота экрана
+Xhalf = Xmax/2-1      
+Yhalf = Ymax/2-1
+
+color_fon = #292A53 // цвет фона 
+color_polya = #7F7F7F // цвет поля
+color_ya = #1A1A1A //  цвет ячейки
+
+col_ya=10 // количество ячеек
+border = 3 //размер бортика
+weight_polya =300 // 
+xy=(weight_polya-(border*col_ya))/col_ya //
+x_polya= 250 //
+y_polya= 90 //
+x_=x_polya + border //
+y_=y_polya + border //
+
+
+greed = new (100,INT16)
+clean(greed,color_ya)
+
+// упрощенная функция 
+//преобразования чисел в 
+// строку
+fn n2s( $n )
+ {
+  $s=""
+  num2str( $s, $n )
+  ret( $s)
+ } 
+// функция нужна для перевода
+// системы координат для 
+
+fn calc_x($x)
+{
+   
+  $fx=0;
+  if $x <Xmax
+  {
+     if $x <Xhalf
+     {
+        $fx = -Xhalf+$x
+      }
+      else 
+      {
+         $fx =$x-( Xhalf+1)
+       }
+    }
+    else 
+    {
+     ret(-1111)
+     }
+
+ret($fx)
+}
+
+fn calc_y($y)
+{
+   
+  $fy=0;
+  if $y <Ymax
+  {
+     if $y <Yhalf
+     {
+         $fy = -Yhalf+$y
+      }
+      else 
+      {
+         $fy =$y-( Yhalf+1)
+       }
+    }
+    else 
+    {
+     ret(-1111)
+     }
+
+ret($fy)
+}
+
+/*﻿fn show_help_line ()
+{
+
+}
+
+fn show_menu_button ()
+{
+
+}
+
+fn show_menu()
+{
+
+}
+
+fn show_bots ()
+{
+
+}
+*/
+
+
+fn show_all_ya()
+{   
+	$y=0
+	while ($y <col_ya)
+	{
+	$x=0
+	while ($x < col_ya)
+	{
+		fbox(calc_x(x_),calc_y(y_),xy,xy,color_ya)
+		x_=x_+xy+border
+
+		$x=$x+1
+	}
+	x_=x_polya + border
+	$y=$y+1
+	y_=y_+xy+border
+	}
+	y_=y_polya + border
+	
+}
+
+fn show_pole()
+{
+	fbox(calc_x(x_polya),calc_y(y_polya),weight_polya,weight_polya,color_polya)
+	
+}
+
+fn logo()
+{
+   print("SIMYlATION LIVE 0.0.07",calc_x(400),calc_y(45),color_polya)
+}
+
+fn cheak_input()
+{
+   // проверяем события 
+  while( get_event() ) 
+  {
+	  if EVT[ EVT_TYPE ] == EVT_QUIT 
+		{ 
+			halt 
+		} 
+  }
+
+}
+
+/*
+функцией show_all_ya2 я горжусь) 
+во первых : после написания сразу
+ заработала не считая не указанного
+знака доллара на иксе которую я
+исправил и неправильно записанного
+условия для цыкла 
+во вторых : она более лаконична и по-
+-нятна на мой взгляд чем первый вариант
+в третьих : использует всего один цыкл
+в четвертых : она оперирует контейнером
+greed  в котором боты будут отмечать свое
+присутствие в мире 
+
+старую функцию оставлю на память :)
+*/
+
+fn show_all_ya2()
+{
+    $x=0
+    $y=0
+while($y <= 99)
+{
+    if ($x==10)
+   {
+     $x=0
+      y_=y_+xy+border
+      x_=x_polya+ border
+    }
+   fbox(calc_x(x_),calc_y(y_),xy,xy,greed[$y])
+   x_= x_+xy+border
+   $x=$x+1
+   $y=$y+1
+}
+x_=x_polya+border
+y_=y_polya+border
+}
+
+RUN :
+  frame()
+  clear(color_fon)
+  show_pole()
+  show_all_ya2()
+  logo()
+  cheak_input()
+goto RUN
+  
